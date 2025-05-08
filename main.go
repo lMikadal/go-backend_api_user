@@ -2,10 +2,10 @@ package main
 
 import (
 	"log"
-	"net/http"
 	"os"
 
 	"github.com/joho/godotenv"
+	"github.com/lMikadal/go-backend_api_user/handler"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -31,9 +31,10 @@ func main() {
 		MaxAge:           300,
 	}))
 
-	e.GET("/", func(c echo.Context) error {
-		return c.String(http.StatusOK, "Hello, World!")
-	})
+	// group route
+	g := e.Group("/api/v1")
+
+	g.GET("/healthy", handler.HandlerHealthy)
 
 	e.Logger.Fatal(e.Start(":" + port))
 }
