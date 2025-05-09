@@ -32,9 +32,10 @@ func main() {
 	}))
 
 	// group route
-	g := e.Group("/api/v1")
+	api := e.Group("/api")
+	v1 := api.Group("/v1")
 
-	g.GET("/healthy", handler.HandlerHealthy)
+	v1.GET("/healthy", handler.HandlerHealthy)
 
 	e.Logger.Fatal(e.Start(":" + port))
 }

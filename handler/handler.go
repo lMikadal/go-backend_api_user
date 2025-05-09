@@ -1,7 +1,11 @@
 package handler
 
-import "github.com/labstack/echo/v4"
+import (
+	"net/http"
+
+	"github.com/labstack/echo/v4"
+)
 
 func HandlerHealthy(c echo.Context) error {
-	return c.String(200, "ok!!")
+	return c.String(http.StatusOK, "ok!!")
 }
