@@ -1,5 +1,9 @@
 N = main
 
+######
+# GO #
+######
+
 all:
 	go run $(N).go
 
@@ -18,3 +22,10 @@ build:
 .PHONY: build-run
 build-run:
 	go build $(N).go && ./$(N)
+
+#######
+# SQLC #
+#######
+
+generate:
+	sqlc generate

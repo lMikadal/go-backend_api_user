@@ -1,14 +1,22 @@
 package main
 
 import (
+	"database/sql"
 	"log"
 	"os"
 
 	"github.com/joho/godotenv"
 	"github.com/lMikadal/go-backend_api_user/handler"
+	"github.com/lMikadal/go-backend_api_user/internal/database"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+
+	_ "github.com/lib/pq" // postgres driver
 )
+
+type apiConfig struct {
+	DB *database.Queries
+}
 
 func main() {
 	// load .env file
@@ -30,6 +38,12 @@ func main() {
 		AllowCredentials: false,
 		MaxAge:           300,
 	}))
+
+	// connect to database
+	_, err = sql.Open("postgres", os.Getenv("DB_URL"))
+	if err != nil {
+		log.Fatal("Error connecting to database:", err)
+	}
 
 	// group route
 	api := e.Group("/api")
