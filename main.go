@@ -14,10 +14,6 @@ import (
 	_ "github.com/lib/pq" // postgres driver
 )
 
-type apiConfig struct {
-	DB *database.Queries
-}
-
 func main() {
 	// load .env file
 	err := godotenv.Load()
@@ -40,9 +36,13 @@ func main() {
 	}))
 
 	// connect to database
-	_, err = sql.Open("postgres", os.Getenv("DB_URL"))
+	conn, err := sql.Open("postgres", os.Getenv("DB_URL"))
 	if err != nil {
 		log.Fatal("Error connecting to database:", err)
+	}
+
+	apiConfig := handler.ApiConfig{
+		DB: database.New(conn),
 	}
 
 	// group route
@@ -50,6 +50,9 @@ func main() {
 	v1 := api.Group("/v1")
 
 	v1.GET("/healthy", handler.HandlerHealthy)
+
+	// user
+	v1.POST("/user", apiConfig.HandlerCreateUser)
 
 	e.Logger.Fatal(e.Start(":" + port))
 }
