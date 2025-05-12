@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/lMikadal/go-backend_api_user/internal/auth"
 	"github.com/lMikadal/go-backend_api_user/internal/database"
 	"github.com/lMikadal/go-backend_api_user/model"
 	"github.com/labstack/echo/v4"
@@ -35,7 +36,30 @@ func (apiConfig *ApiConfig) HandlerCreateUser(c echo.Context) error {
 		CreatedAt: user.CreatedAt,
 		UpdatedAt: user.UpdatedAt,
 		Name:      user.Name,
+		ApiKey:    user.ApiKey,
 	}
 
 	return c.JSON(http.StatusCreated, model.DatabaseUserToUser(respUser))
+}
+
+func (apiConfig *ApiConfig) HandlerGetUser(c echo.Context) error {
+	apiKey, err := auth.GetAPIKey(c.Request().Header)
+	if err != nil {
+		return c.String(http.StatusUnauthorized, err.Error())
+	}
+
+	user, err := apiConfig.DB.GetUserByAPIKey(c.Request().Context(), apiKey)
+	if err != nil {
+		return c.String(http.StatusInternalServerError, "something wrong!!")
+	}
+
+	respUser := model.User{
+		ID:        user.ID,
+		CreatedAt: user.CreatedAt,
+		UpdatedAt: user.UpdatedAt,
+		Name:      user.Name,
+		ApiKey:    user.ApiKey,
+	}
+
+	return c.JSON(http.StatusOK, model.DatabaseUserToUser(respUser))
 }

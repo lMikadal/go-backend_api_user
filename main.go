@@ -53,6 +53,7 @@ func main() {
 
 	// user
 	v1.POST("/user", apiConfig.HandlerCreateUser)
+	v1.GET("/user", apiConfig.HandlerGetUser)
 
 	e.Logger.Fatal(e.Start(":" + port))
 }
